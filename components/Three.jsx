@@ -22,7 +22,7 @@ import { LayerMaterial, Color, Depth } from "lamina";
 import { motion } from "framer-motion";
 import { CustomButton } from "@components";
 
-export default ({isMobile, setIsMobile}) => {
+export default ({ isMobile, setIsMobile }) => {
   const [isMoving, setIsMoving] = useState(true);
 
   useEffect(() => {
@@ -46,13 +46,13 @@ export default ({isMobile, setIsMobile}) => {
     };
   }, []);
   const props = {
-    scale: isMobile ? 0.7 : 0.9,
+    scale: isMobile ? 0.8 : 0.9,
   };
   const { scene, nodes, materials } = useGLTF(
     "/jeep_grand_cherokee_trackhawk.glb"
-  ); //jeep_grand_cherokee_trackhawk
-  scene.position.x = isMobile ? -3 : 7;
-  scene.position.y = isMobile ? -11 : 3;
+  );
+  scene.position.x = isMobile ? 1 : 7;
+  scene.position.y = isMobile ? -5 : 3;
 
   return (
     <>
@@ -63,7 +63,11 @@ export default ({isMobile, setIsMobile}) => {
         <Suspense fallback={null}>
           <primitive object={scene} {...props} />
         </Suspense>
-        <CameraMovement isMoving={isMoving} setIsMoving={setIsMoving} />
+        <CameraMovement
+          isMobile={isMobile}
+          isMoving={isMoving}
+          setIsMoving={setIsMoving}
+        />
         <DynamicLighting isMoving={isMoving} />
       </Canvas>
     </>
@@ -99,7 +103,7 @@ const DynamicLighting = ({ isMoving }) => {
 
   return null; // This component doesn't render anything
 };
-const CameraMovement = ({ isMoving, setIsMoving }) => {
+const CameraMovement = ({ isMobile, isMoving, setIsMoving }) => {
   const { camera, gl } = useThree();
 
   const speed = 5; // Adjust the speed as needed
@@ -108,7 +112,7 @@ const CameraMovement = ({ isMoving, setIsMoving }) => {
   useFrame((state, delta) => {
     if (isMoving) {
       camera.position.x += speed * delta * 2;
-      camera.position.y += (speed * delta) / 2;
+      camera.position.y += (speed * delta) / (isMobile ? 12 : 2);
 
       // Check if the camera has reached the maxX position
       if (camera.position.x >= maxX) {
